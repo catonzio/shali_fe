@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/flutter,visualstudiocode,android,xcode,windows,web,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=flutter,visualstudiocode,android,xcode,windows,web,linux
 
+### Mine ###
+firebase.exe
+
 ### Android ###
 # Gradle files
 .gradle/
