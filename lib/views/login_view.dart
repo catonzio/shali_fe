@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shali_fe/controllers/api_controller.dart';
+import 'package:shali_fe/api_controllers/api_controller.dart';
 import 'package:shali_fe/controllers/login_controller.dart';
 import 'package:shali_fe/widgets/default_drawer.dart';
 
@@ -16,48 +16,46 @@ class LoginView extends StatelessWidget {
               title: const Text("Login"),
             ),
             drawer: const DefaultDrawer(),
-            body: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(64),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text("token: ${Get.find<ApiController>().apiToken}"),
-                  MaterialButton(
-                    onPressed: () {
-                      Get.find<ApiController>().clearToken();
-                    },
-                    child: Text("Clear"),
-                  ),
-                  Column(
-                    children: [
-                      TextField(
-                          controller: controller.emailController,
-                          decoration: const InputDecoration(hintText: "email")),
-                      TextField(
-                        controller: controller.passwordController,
-                        decoration: InputDecoration(
-                            hintText: "password",
-                            suffix: IconButton(
-                              padding: const EdgeInsets.all(0),
-                              icon: Icon(controller.isPasswordObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
-                              onPressed: () => controller.isPasswordObscure =
-                                  !controller.isPasswordObscure,
-                            )),
-                        obscureText: controller.isPasswordObscure,
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                      child: const Text("Login"),
-                      onPressed: () => controller.login()),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text("Register"),
-                  )
-                ],
+            body: Center(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                padding: const EdgeInsets.all(64),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        TextField(
+                            controller: controller.emailController,
+                            decoration:
+                                const InputDecoration(hintText: "email")),
+                        TextField(
+                          controller: controller.passwordController,
+                          decoration: InputDecoration(
+                              hintText: "password",
+                              suffix: IconButton(
+                                padding: const EdgeInsets.all(0),
+                                icon: Icon(controller.isPasswordObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () => controller.isPasswordObscure =
+                                    !controller.isPasswordObscure,
+                              )),
+                          obscureText: controller.isPasswordObscure,
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    ElevatedButton(
+                        child: const Text("Login"),
+                        onPressed: () => controller.login()),
+                    Spacer(),
+                    TextButton(
+                      onPressed: () => Get.toNamed("/register"),
+                      child: const Text("Register"),
+                    )
+                  ],
+                ),
               ),
             ));
       },

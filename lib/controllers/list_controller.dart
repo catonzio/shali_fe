@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:shali_fe/controllers/api_controller.dart';
+import 'package:shali_fe/api_controllers/list_api_controller.dart';
 import 'package:shali_fe/models/item.dart';
 import 'package:shali_fe/models/list.dart';
 
@@ -8,11 +8,14 @@ class ListBinding implements Bindings {
 // default dependency
   @override
   void dependencies() {
+    Get.lazyPut(() => ListApiController());
     Get.lazyPut(() => ListController());
   }
 }
 
 class ListController extends GetxController {
+  final ListApiController apiController = Get.find<ListApiController>();
+
   late Rx<ListModel> _list;
   ListModel get list => _list.value;
   set list(ListModel value) => _list.value = value;
@@ -27,7 +30,6 @@ class ListController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    ApiController apiController = Get.find<ApiController>();
     _list = (Get.arguments as ListModel).obs;
     if (list.items.isEmpty) {
       isLoadingItems = true;
@@ -43,7 +45,6 @@ class ListController extends GetxController {
       Get.snackbar(
           "Title is empty", "When you add an item you must specify a title");
     } else {
-      ApiController apiController = Get.find<ApiController>();
       ItemModel item = ItemModel(
           key: UniqueKey(),
           id: list.items.length + 1,
@@ -67,7 +68,6 @@ class ListController extends GetxController {
   }
 
   void removeItem(int index) async {
-    ApiController apiController = Get.find<ApiController>();
     ItemModel item = list.items[index];
     bool success = await apiController.removeItem(item.id);
     if (success) {
@@ -78,7 +78,6 @@ class ListController extends GetxController {
   }
 
   void updateItem(int id, Map<String, dynamic> params) {
-    ApiController apiController = Get.find<ApiController>();
     apiController.updateItem(id, params);
   }
 }

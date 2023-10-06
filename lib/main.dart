@@ -2,16 +2,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:shali_fe/controllers/api_controller.dart';
+import 'package:shali_fe/api_controllers/api_controller.dart';
 import 'package:shali_fe/controllers/home_controller.dart';
 import 'package:shali_fe/controllers/list_controller.dart';
 import 'package:shali_fe/controllers/login_controller.dart';
+import 'package:shali_fe/controllers/register_controller.dart';
 import 'package:shali_fe/controllers/settings_controller.dart';
 import 'package:shali_fe/firebase_options.dart';
 import 'package:shali_fe/notifications.dart';
 import 'package:shali_fe/views/home_view.dart';
 import 'package:shali_fe/views/list_view.dart';
 import 'package:shali_fe/views/login_view.dart';
+import 'package:shali_fe/views/register_view.dart';
 
 import 'notification_service.dart';
 
@@ -49,8 +51,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'ShaLi',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData.light(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       themeMode: ThemeMode.system,
       initialBinding: InitialBinding(),
       initialRoute:
@@ -63,6 +65,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/home", page: () => HomeView(), binding: HomeBinding()),
         GetPage(
             name: "/list", page: () => MyListView(), binding: ListBinding()),
+        GetPage(
+            name: "/register",
+            page: () => const RegisterView(),
+            binding: RegisterBinding())
       ],
     );
   }

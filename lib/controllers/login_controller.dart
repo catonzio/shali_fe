@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shali_fe/controllers/api_controller.dart';
+import 'package:shali_fe/api_controllers/login_api_controller.dart';
+import 'package:shali_fe/api_controllers/api_controller.dart';
 import 'package:shali_fe/schemas/login_schema.dart';
 
 class LoginBinding implements Bindings {
 // default dependency
   @override
   void dependencies() {
+    Get.lazyPut(() => LoginApiController());
     Get.lazyPut(() => LoginController());
-    // Get.put(ApiController());
   }
 }
 
-class LoginController extends GetxController {
+class LoginController extends ApiController {
+  final LoginApiController apiController = Get.find<LoginApiController>();
+
   final RxBool _isPasswordObscure = false.obs;
   bool get isPasswordObscure => _isPasswordObscure.value;
   set isPasswordObscure(bool value) => _isPasswordObscure.value = value;
@@ -33,8 +36,6 @@ class LoginController extends GetxController {
   }
 
   Future<void> login() async {
-    ApiController apiController = Get.find<ApiController>();
-    // apiController.setToken("");
     LoginSchema result = await apiController.login(
         emailController.text.trim(), passwordController.text.trim());
     if (result.success) {

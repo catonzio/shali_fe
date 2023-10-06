@@ -32,7 +32,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> dict) {
     RxList<ListModel> lists;
-    if (dict["lists"] == null) {
+    if (!dict.containsKey("lists") || dict["lists"] == null) {
       lists = <ListModel>[].obs;
     } else {
       lists = (dict["lists"] as List<dynamic>)

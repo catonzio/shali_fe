@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shali_fe/controllers/api_controller.dart';
+import 'package:shali_fe/api_controllers/home_api_controller.dart';
 import 'package:shali_fe/controllers/settings_controller.dart';
 
 class DefaultDrawer extends StatelessWidget {
@@ -30,7 +30,7 @@ class DefaultDrawer extends StatelessWidget {
             ),
             ListTile(
               title: const Text("Logout"),
-              onTap: () => Get.find<ApiController>().logout(),
+              onTap: () => Get.find<HomeApiController>().logout(),
             )
           ],
         ));

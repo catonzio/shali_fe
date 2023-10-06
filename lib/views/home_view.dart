@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shali_fe/controllers/api_controller.dart';
 import 'package:shali_fe/controllers/home_controller.dart';
 import 'package:shali_fe/models/list.dart';
 import 'package:shali_fe/widgets/default_drawer.dart';

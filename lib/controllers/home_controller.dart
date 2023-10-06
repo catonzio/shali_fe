@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:shali_fe/controllers/api_controller.dart';
+import 'package:shali_fe/api_controllers/home_api_controller.dart';
 import 'package:shali_fe/models/item.dart';
 import 'package:shali_fe/models/list.dart';
 import 'package:shali_fe/models/user.dart';
@@ -9,11 +9,13 @@ class HomeBinding implements Bindings {
 // default dependency
   @override
   void dependencies() {
+    Get.lazyPut(() => HomeApiController());
     Get.lazyPut(() => HomeController());
   }
 }
 
 class HomeController extends GetxController {
+  final HomeApiController apiController = Get.find<HomeApiController>();
   User user = User.initial();
 
   final RxBool _isMoving = false.obs;
@@ -26,12 +28,11 @@ class HomeController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    ApiController apiController = Get.find<ApiController>();
     Map<String, dynamic> dict = await apiController.fetchUser();
     user = User.fromJson(dict);
     if (user.lists.isEmpty) {
       isLoadingLists = true;
-      List<ListModel> lists = await Get.find<ApiController>().fetchUserLists();
+      List<ListModel> lists = await apiController.fetchUserLists();
       user.lists.addAll(lists);
       isLoadingLists = false;
     }
@@ -43,7 +44,6 @@ class HomeController extends GetxController {
       Get.snackbar(
           "Title is empty", "When you add a new list you must specify a title");
     } else {
-      ApiController apiController = Get.find<ApiController>();
       ListModel list = ListModel(
           key: UniqueKey(),
           id: user.lists.length + 1,
@@ -60,7 +60,6 @@ class HomeController extends GetxController {
   }
 
   void removeList(int index) async {
-    ApiController apiController = Get.find<ApiController>();
     ListModel list = user.lists[index];
     bool success = await apiController.removeList(list.id);
     if (success) {
@@ -76,10 +75,10 @@ class HomeController extends GetxController {
     }
     final ListModel list = user.lists.removeAt(oldIndex);
     user.lists.insert(newIndex, list);
+    // apiController.
   }
 
   void updateList(int id, Map<String, dynamic> params) {
-    ApiController apiController = Get.find<ApiController>();
     apiController.updateList(id, params);
   }
 }
