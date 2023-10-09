@@ -1,0 +1,84 @@
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:shali_fe/data/models/item.dart';
+import 'package:shali_fe/data/models/list.dart';
+import 'package:shali_fe/data/repositories/list_repository.dart';
+
+class UserController extends GetxController {
+  final ListRepository listRepository;
+
+  final TextEditingController searchController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+
+  List<ListModel> lists = <ListModel>[].obs;
+
+  UserController({required this.listRepository});
+
+  final RxBool _isMoving = false.obs;
+  bool get isMoving => _isMoving.value;
+  set isMoving(bool value) => _isMoving.value = value;
+
+  final RxBool _isLoadingLists = false.obs;
+  bool get isLoadingLists => _isLoadingLists.value;
+  set isLoadingLists(bool value) => _isLoadingLists.value = value;
+
+  @override
+  Future<void> onInit() async {
+    isLoadingLists = true;
+    lists = await listRepository.fetchUserLists();
+    isLoadingLists = false;
+    super.onInit();
+  }
+
+  Future<bool> addList() async {
+    String title = nameController.text.trim();
+    String description = descriptionController.text.trim();
+
+    if (title.isEmpty) {
+      Get.snackbar(
+          "Title is empty", "When you add a new list you must specify a title");
+      return false;
+    } else {
+      ListModel list = ListModel(
+          key: UniqueKey(),
+          id: lists.length + 1,
+          name: title,
+          description: description,
+          items: <ItemModel>[].obs);
+      bool success = await listRepository.addList(list);
+      if (success) {
+        lists.add(list);
+        nameController.clear();
+        descriptionController.clear();
+        return true;
+      } else {
+        Get.snackbar("Add list failed", "Please try again later");
+        return false;
+      }
+    }
+  }
+
+  void removeList(int index) async {
+    ListModel list = lists[index];
+    bool success = await listRepository.removeList(list.id);
+    if (success) {
+      lists.removeAt(index);
+    } else {
+      Get.snackbar("Remove item failed", "Please try again later");
+    }
+  }
+
+  reorderLists(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final ListModel list = lists.removeAt(oldIndex);
+    lists.insert(newIndex, list);
+    listRepository.reorderLists(oldIndex, newIndex);
+  }
+
+  void updateList(int id, Map<String, dynamic> params) {
+    listRepository.updateList(id, params);
+  }
+}

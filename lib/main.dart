@@ -2,23 +2,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:shali_fe/api_controllers/api_controller.dart';
-import 'package:shali_fe/controllers/home_controller.dart';
-import 'package:shali_fe/controllers/list_controller.dart';
-import 'package:shali_fe/controllers/login_controller.dart';
-import 'package:shali_fe/controllers/register_controller.dart';
-import 'package:shali_fe/controllers/settings_controller.dart';
-import 'package:shali_fe/firebase_options.dart';
-import 'package:shali_fe/notifications.dart';
-import 'package:shali_fe/views/home_view.dart';
-import 'package:shali_fe/views/list_view.dart';
-import 'package:shali_fe/views/login_view.dart';
-import 'package:shali_fe/views/register_view.dart';
-
-import 'notification_service.dart';
+import 'package:shali_fe/configs/notifications/firebase_options.dart';
+import 'package:shali_fe/configs/notifications/notification_service.dart';
+import 'package:shali_fe/configs/notifications/notifications.dart';
+import 'package:shali_fe/configs/pages.dart';
+import 'package:shali_fe/configs/routes.dart';
+import 'package:shali_fe/configs/themes.dart';
+import 'package:shali_fe/data/bindings/initial_bindings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeApp();
+  runApp(const MyApp());
+}
+
+Future<void> initializeApp() async {
   FirebaseOptions? options = DefaultFirebaseOptions.currentPlatform;
   if (options != null) {
     await Firebase.initializeApp(options: options);
@@ -28,17 +26,6 @@ Future<void> main() async {
   }
   await GetStorage.init("api");
   await GetStorage.init("settings");
-  runApp(const MyApp());
-}
-
-class InitialBinding implements Bindings {
-// default dependency
-  @override
-  void dependencies() {
-    Get.lazyPut(() => HomeController());
-    Get.put(SettingsController());
-    Get.put(ApiController());
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -46,31 +33,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    // Get.put(ApiController());
-    // Get.put(SettingsController());
+    // Get.put(ClientProvider(), permanent: true);
     return GetMaterialApp(
-      title: 'ShaLi',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
-      themeMode: ThemeMode.system,
-      initialBinding: InitialBinding(),
-      initialRoute:
-          Get.find<ApiController>().apiToken == null ? "/login" : "/home",
-      getPages: [
-        GetPage(
-            name: "/login",
-            page: () => const LoginView(),
-            binding: LoginBinding()),
-        GetPage(name: "/home", page: () => HomeView(), binding: HomeBinding()),
-        GetPage(
-            name: "/list", page: () => MyListView(), binding: ListBinding()),
-        GetPage(
-            name: "/register",
-            page: () => const RegisterView(),
-            binding: RegisterBinding())
-      ],
-    );
+        title: 'ShaLi',
+        debugShowCheckedModeBanner: false,
+        theme: MyThemes.lightTheme(),
+        darkTheme: MyThemes.darkTheme(),
+        themeMode: ThemeMode.system,
+        initialBinding: InitialBinding(),
+        initialRoute: Routes.initial,
+        // Get.find<ApiController>().apiToken == null ? Routes.login : Routes.home,
+        defaultTransition: Transition.fade,
+        getPages: AppPages.routes);
   }
 }
