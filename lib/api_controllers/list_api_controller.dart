@@ -52,4 +52,15 @@ class ListApiController extends ApiController {
       e.printError();
     }
   }
+
+  Future<bool> reorderItems(int oldIndex, int newIndex) async {
+    try {
+      dio.Response response = await dioClient.post("/items/reorder",
+          data: {"old_index": oldIndex, "new_index": newIndex});
+      return response.statusCode == 200;
+    } on dio.DioException catch (e) {
+      e.printError();
+      return false;
+    }
+  }
 }

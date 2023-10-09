@@ -35,9 +35,9 @@ class InitialBinding implements Bindings {
 // default dependency
   @override
   void dependencies() {
-    Get.lazyPut(() => SettingsController());
     Get.lazyPut(() => HomeController());
-    // Get.put(ApiController());
+    Get.put(SettingsController());
+    Get.put(ApiController());
   }
 }
 
@@ -46,8 +46,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(ApiController());
-    Get.put(SettingsController());
+    
+    // Get.put(ApiController());
+    // Get.put(SettingsController());
     return GetMaterialApp(
       title: 'ShaLi',
       debugShowCheckedModeBanner: false,

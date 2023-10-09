@@ -6,9 +6,6 @@ import 'package:shali_fe/widgets/default_drawer.dart';
 import 'package:shali_fe/widgets/list_card.dart';
 
 class HomeView extends StatelessWidget {
-  // final HomeController controller = Get.put(HomeController());
-  final TextEditingController _nameController = TextEditingController();
-
   HomeView({super.key}) {
     // Get.put(HomeController());
   }
@@ -21,6 +18,50 @@ class HomeView extends StatelessWidget {
             appBar: AppBar(
               // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: const Text("Your lists"),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    controller.isMoving = !controller.isMoving;
+                  },
+                  icon: controller.isMoving
+                      ? const Icon(Icons.done)
+                      : const Icon(Icons.format_list_numbered_rounded),
+                  tooltip: controller.isMoving ? "Done" : "Reorder",
+                )
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () => Get.defaultDialog(
+                  title: "Add list",
+                  content: Column(
+                    children: [
+                      TextField(
+                        controller: controller.nameController,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(), labelText: "Title"),
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextField(
+                        controller: controller.descriptionController,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Description"),
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      ElevatedButton(
+                          onPressed: () async {
+                            bool res = await controller.addList();
+                            if (res) Get.back();
+                          },
+                          child: const Text("Add"))
+                    ],
+                  )),
             ),
             drawer: const DefaultDrawer(),
             body: Center(
@@ -43,16 +84,9 @@ class HomeView extends StatelessWidget {
             children: [
               Expanded(
                   child: TextField(
-                controller: _nameController,
+                controller: controller.searchController,
               )),
-              GestureDetector(
-                onTap: () {
-                  controller.addList(
-                      _nameController.text.trim(), "Questo è una nuova lista");
-                  _nameController.clear();
-                },
-                child: const Icon(Icons.add_box_outlined),
-              )
+              const Icon(Icons.search),
             ],
           ),
         ),

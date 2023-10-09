@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:shali_fe/api_controllers/home_api_controller.dart';
 import 'package:shali_fe/models/item.dart';
@@ -16,6 +17,11 @@ class HomeBinding implements Bindings {
 
 class HomeController extends GetxController {
   final HomeApiController apiController = Get.find<HomeApiController>();
+
+  final TextEditingController searchController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+
   User user = User.initial();
 
   final RxBool _isMoving = false.obs;
@@ -39,10 +45,14 @@ class HomeController extends GetxController {
     super.onInit();
   }
 
-  Future<void> addList(String title, String description) async {
+  Future<bool> addList() async {
+    String title = nameController.text.trim();
+    String description = descriptionController.text.trim();
+
     if (title.isEmpty) {
       Get.snackbar(
           "Title is empty", "When you add a new list you must specify a title");
+      return false;
     } else {
       ListModel list = ListModel(
           key: UniqueKey(),
@@ -53,8 +63,12 @@ class HomeController extends GetxController {
       bool success = await apiController.addList(list);
       if (success) {
         user.lists.add(list);
+        nameController.clear();
+        descriptionController.clear();
+        return true;
       } else {
         Get.snackbar("Add list failed", "Please try again later");
+        return false;
       }
     }
   }
@@ -75,7 +89,7 @@ class HomeController extends GetxController {
     }
     final ListModel list = user.lists.removeAt(oldIndex);
     user.lists.insert(newIndex, list);
-    // apiController.
+    apiController.reorderLists(oldIndex, newIndex);
   }
 
   void updateList(int id, Map<String, dynamic> params) {

@@ -18,7 +18,6 @@ class HomeApiController extends ApiController {
   Future<List<ListModel>> fetchUserLists() async {
     try {
       dio.Response response = await dioClient.get("/lists");
-      print(response.data);
       List<ListModel> lists =
           (response.data as List).map((e) => ListModel.fromJson(e)).toList();
       return lists;
@@ -67,5 +66,16 @@ class HomeApiController extends ApiController {
   void logout() {
     clearToken();
     Get.offAllNamed("/login");
+  }
+
+  Future<bool> reorderLists(int oldIndex, int newIndex) async {
+    try {
+      dio.Response response = await dioClient.post("/lists/reorder",
+          data: {"old_index": oldIndex, "new_index": newIndex});
+      return response.statusCode == 200;
+    } on dio.DioException catch (e) {
+      e.printError();
+      return false;
+    }
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shali_fe/api_controllers/api_controller.dart';
 import 'package:shali_fe/controllers/login_controller.dart';
 import 'package:shali_fe/widgets/default_drawer.dart';
 
@@ -45,11 +44,11 @@ class LoginView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Spacer(),
+                    const Spacer(),
                     ElevatedButton(
                         child: const Text("Login"),
                         onPressed: () => controller.login()),
-                    Spacer(),
+                    const Spacer(),
                     TextButton(
                       onPressed: () => Get.toNamed("/register"),
                       child: const Text("Register"),
