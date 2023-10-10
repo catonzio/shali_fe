@@ -41,7 +41,7 @@ class MyListView extends StatelessWidget {
             body: Center(
                 child: Padding(
               padding: const EdgeInsets.all(16),
-              child: controller.isLoadingItems
+              child: controller.isLoadingElements
                   ? const CircularProgressIndicator()
                   : mainBody(controller),
             )));
@@ -62,7 +62,7 @@ class MyListView extends StatelessWidget {
               Expanded(
                   child: TextField(
                 controller: controller.searchController,
-                onChanged: (value) => controller.filter(value),
+                onChanged: (value) => controller.filterElements(value),
               )),
               const Icon(Icons.search),
             ],

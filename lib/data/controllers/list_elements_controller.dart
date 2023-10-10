@@ -11,12 +11,12 @@ abstract class ListElementsController extends GetxController {
   set isMoving(bool value) => _isMoving.value = value;
 
   final RxBool _isLoadingElements = false.obs;
-  bool get isLoadingLists => _isLoadingElements.value;
-  set isLoadingLists(bool value) => _isLoadingElements.value = value;
+  bool get isLoadingElements => _isLoadingElements.value;
+  set isLoadingElements(bool value) => _isLoadingElements.value = value;
 
   Future<bool> addElements();
   void removeElements(int index);
   void reorderElements(int oldIndex, int newIndex);
   void updateElements(int id, Map<String, dynamic> params);
-  void filterElements();
+  void filterElements(String query);
 }

@@ -8,15 +8,20 @@ import 'package:shali_fe/data/repositories/list_repository.dart';
 class UserController extends ListElementsController {
   final ListRepository listRepository;
 
-  List<ListModel> lists = <ListModel>[].obs;
+  late RxList<ListModel> originalLists;
+  
+  final RxList<ListModel> _visibleLists = <ListModel>[].obs;
+  List<ListModel> get visibleLists => _visibleLists;
+  set visibleLists(List<ListModel> value) => _visibleLists.value = value;
 
   UserController({required this.listRepository});
 
   @override
   Future<void> onInit() async {
-    isLoadingLists = true;
-    lists = await listRepository.fetchUserLists();
-    isLoadingLists = false;
+    isLoadingElements = true;
+    originalLists = (await listRepository.fetchUserLists()).obs;
+    visibleLists = originalLists;
+    isLoadingElements = false;
     super.onInit();
   }
 
@@ -32,13 +37,14 @@ class UserController extends ListElementsController {
     } else {
       ListModel list = ListModel(
           key: UniqueKey(),
-          id: lists.length + 1,
+          id: originalLists.length + 1,
           name: title,
           description: description,
           items: <ItemModel>[].obs);
       bool success = await listRepository.addList(list);
       if (success) {
-        lists.add(list);
+        originalLists.add(list);
+        filterElements(searchController.text.trim());
         nameController.clear();
         descriptionController.clear();
         return true;
@@ -51,10 +57,11 @@ class UserController extends ListElementsController {
 
   @override
   void removeElements(int index) async {
-    ListModel list = lists[index];
+    ListModel list = visibleLists[index];
     bool success = await listRepository.removeList(list.id);
     if (success) {
-      lists.removeAt(index);
+      originalLists.removeAt(index);
+      filterElements(searchController.text.trim());
     } else {
       Get.snackbar("Remove item failed", "Please try again later");
     }
@@ -65,18 +72,22 @@ class UserController extends ListElementsController {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    final ListModel list = lists.removeAt(oldIndex);
-    lists.insert(newIndex, list);
+    final ListModel list = visibleLists.removeAt(oldIndex);
+    visibleLists.insert(newIndex, list);
     listRepository.reorderLists(oldIndex, newIndex);
   }
 
   @override
   void updateElements(int id, Map<String, dynamic> params) {
     listRepository.updateList(id, params);
+    filterElements(searchController.text.trim());
   }
-  
+
   @override
-  void filterElements() {
-    lists = lists.where((list) => list.name.contains(searchController.text.trim())).toList().obs;
+  void filterElements(String query) {
+    visibleLists = originalLists
+        .where((list) => list.name.contains(searchController.text.trim()))
+        .toList()
+        .obs;
   }
 }

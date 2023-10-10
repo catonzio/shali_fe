@@ -7,9 +7,7 @@ import 'package:shali_fe/ui/widgets/insert_widget.dart';
 import 'package:shali_fe/ui/widgets/list_card.dart';
 
 class HomeView extends StatelessWidget {
-  HomeView({super.key}) {
-    // Get.put(HomeController());
-  }
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,36 +19,37 @@ class HomeView extends StatelessWidget {
               title: const Text("Your lists"),
               centerTitle: true,
               actions: [
-                IconButton(
-                  onPressed: () {
-                    controller.isMoving = !controller.isMoving;
-                  },
-                  icon: controller.isMoving
-                      ? const Icon(Icons.done)
-                      : const Icon(Icons.format_list_numbered_rounded),
-                  tooltip: controller.isMoving ? "Done" : "Reorder",
-                )
+                if (controller.searchController.text.isEmpty)
+                  IconButton(
+                    onPressed: () {
+                      controller.isMoving = !controller.isMoving;
+                    },
+                    icon: controller.isMoving
+                        ? const Icon(Icons.done)
+                        : const Icon(Icons.format_list_numbered_rounded),
+                    tooltip: controller.isMoving ? "Done" : "Reorder",
+                  )
               ],
             ),
             floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () => Get.defaultDialog(
-                  title: "Add list",
-                  content: InsertWidget(controller: controller))
-            ),
+                child: const Icon(Icons.add),
+                onPressed: () => Get.defaultDialog(
+                    title: "Add list",
+                    content: InsertWidget(controller: controller))),
             drawer: const DefaultDrawer(),
             body: Center(
                 child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: controller.isLoadingLists
+                    child: controller.isLoadingElements
                         ? const CircularProgressIndicator()
-                        : mainBody(context, controller))));
+                        : mainBody(controller))));
       },
     );
   }
 
-  Widget mainBody(BuildContext context, UserController controller) {
-    List<ListModel> lists = controller.lists;
+  Widget mainBody(UserController controller) {
+    List<ListModel> lists = controller.visibleLists;
+
     return Column(
       children: [
         Padding(
@@ -60,13 +59,14 @@ class HomeView extends StatelessWidget {
               Expanded(
                   child: TextField(
                 controller: controller.searchController,
+                onChanged: (value) => controller.filterElements(value),
               )),
               const Icon(Icons.search),
             ],
           ),
         ),
         Expanded(
-          child: controller.isMoving
+          child: controller.isMoving && controller.searchController.text.isEmpty
               ? ReorderableListView.builder(
                   onReorder: (oldIndex, newIndex) =>
                       controller.reorderElements(oldIndex, newIndex),

@@ -13,7 +13,7 @@ class ListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetX<UserController>(
       builder: (controller) {
-        ListModel list = controller.lists[index];
+        ListModel list = controller.visibleLists[index];
         TextStyle style = list.isDone ? checkedStyle : const TextStyle();
 
         return Dismissible(

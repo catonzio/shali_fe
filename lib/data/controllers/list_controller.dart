@@ -13,10 +13,6 @@ class ListController extends ListElementsController {
   ListModel get list => _list.value;
   set list(ListModel value) => _list.value = value;
 
-  final RxBool _isLoadingItems = false.obs;
-  bool get isLoadingItems => _isLoadingItems.value;
-  set isLoadingItems(bool value) => _isLoadingItems.value = value;
-
   final RxList<ItemModel> _visibleItems = <ItemModel>[].obs;
   List<ItemModel> get visibleItems => _visibleItems;
   set visibleItems(List<ItemModel> value) => _visibleItems.value = value;
@@ -27,10 +23,10 @@ class ListController extends ListElementsController {
   Future<void> onInit() async {
     _list = (Get.arguments as ListModel).obs;
     if (list.items.isEmpty) {
-      isLoadingItems = true;
+      isLoadingElements = true;
       List<ItemModel> items = await itemRepository.fetchListItems(list.id);
       list.items.addAll(items);
-      isLoadingItems = false;
+      isLoadingElements = false;
     } 
     if (visibleItems.isEmpty) {
       visibleItems = list.items;
@@ -53,7 +49,7 @@ class ListController extends ListElementsController {
       bool success = await itemRepository.addItem(list.id, item);
       if (success) {
         list.items.add(item);
-        filter(searchController.text.trim());
+        filterElements(searchController.text.trim());
         nameController.clear();
         descriptionController.clear();
       } else {
@@ -69,7 +65,7 @@ class ListController extends ListElementsController {
     bool success = await itemRepository.removeItem(item.id);
     if (success) {
       list.items.removeAt(index);
-      filter(searchController.text.trim());
+      filterElements(searchController.text.trim());
     } else {
       Get.snackbar("Remove item failed", "Please try again later");
     }
@@ -87,19 +83,13 @@ class ListController extends ListElementsController {
   @override
   void updateElements(int id, Map<String, dynamic> params) {
     itemRepository.updateItem(id, params);
-    filter(searchController.text.trim());
+    filterElements(searchController.text.trim());
   }
 
   @override
-  void filterElements() {
-    // list.items = list.items.where((item) => item.name.contains(searchController.text)).toList().obs;
-    // visibleItems = filter(searchController.text);
-  }
-
-  void filter(String query) {
+  void filterElements(String query) {
     visibleItems =
         list.items.where((item) => item.name.contains(query)).toList().obs;
-    print(visibleItems);
     // return list.items.where((item) => item.name.contains(query)).toList();
   }
 }
