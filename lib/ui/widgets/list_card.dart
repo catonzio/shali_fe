@@ -33,7 +33,7 @@ class ListCard extends StatelessWidget {
             ],
           )),
           onDismissed: (DismissDirection direction) =>
-              controller.removeList(index),
+              controller.removeElements(index),
           child: GestureDetector(
             onLongPress: () => controller.isMoving = !controller.isMoving,
             child: Card(
@@ -44,7 +44,7 @@ class ListCard extends StatelessWidget {
                 leading: Checkbox(
                   value: list.isDone,
                   onChanged: (value) {
-                    controller.updateList(list.id, {'is_checked': value});
+                    controller.updateElements(list.id, {'is_checked': value});
                     list.isDone = value!;
                   },
                 ),

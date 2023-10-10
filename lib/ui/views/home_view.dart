@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shali_fe/data/controllers/user_controller.dart';
 import 'package:shali_fe/data/models/list.dart';
 import 'package:shali_fe/ui/widgets/default_drawer.dart';
+import 'package:shali_fe/ui/widgets/insert_widget.dart';
 import 'package:shali_fe/ui/widgets/list_card.dart';
 
 class HomeView extends StatelessWidget {
@@ -35,33 +36,7 @@ class HomeView extends StatelessWidget {
               child: const Icon(Icons.add),
               onPressed: () => Get.defaultDialog(
                   title: "Add list",
-                  content: Column(
-                    children: [
-                      TextField(
-                        controller: controller.nameController,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(), labelText: "Title"),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      TextField(
-                        controller: controller.descriptionController,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Description"),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {
-                            bool res = await controller.addList();
-                            if (res) Get.back();
-                          },
-                          child: const Text("Add"))
-                    ],
-                  )),
+                  content: InsertWidget(controller: controller))
             ),
             drawer: const DefaultDrawer(),
             body: Center(
@@ -94,7 +69,7 @@ class HomeView extends StatelessWidget {
           child: controller.isMoving
               ? ReorderableListView.builder(
                   onReorder: (oldIndex, newIndex) =>
-                      controller.reorderLists(oldIndex, newIndex),
+                      controller.reorderElements(oldIndex, newIndex),
                   itemCount: lists.length,
                   itemBuilder: (context, index) => ListCard(
                         index: index,

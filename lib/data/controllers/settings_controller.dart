@@ -20,7 +20,12 @@ class SettingsController extends GetxController {
   @override
   Future<void> onInit() async {
     isDarkMode = settingsBox().read("isDarkMode") ?? Get.isDarkMode ?? false;
-    user = User.fromJson(await userRepository.fetchUser());
+    try {
+      user = User.fromJson(await userRepository.fetchUser());
+    } catch (e) {
+      print(e);
+      userRepository.logout();
+    }
     super.onInit();
   }
 

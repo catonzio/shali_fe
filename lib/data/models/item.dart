@@ -47,4 +47,9 @@ class ItemModel {
         description: dict["description"] ?? "",
         isDone: dict["is_checked"] ?? false);
   }
+
+  @override
+  String toString() {
+    return name;
+  }
 }

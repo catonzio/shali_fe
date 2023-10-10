@@ -1,27 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:shali_fe/data/controllers/list_elements_controller.dart';
 import 'package:shali_fe/data/models/item.dart';
 import 'package:shali_fe/data/models/list.dart';
 import 'package:shali_fe/data/repositories/list_repository.dart';
 
-class UserController extends GetxController {
+class UserController extends ListElementsController {
   final ListRepository listRepository;
-
-  final TextEditingController searchController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
 
   List<ListModel> lists = <ListModel>[].obs;
 
   UserController({required this.listRepository});
-
-  final RxBool _isMoving = false.obs;
-  bool get isMoving => _isMoving.value;
-  set isMoving(bool value) => _isMoving.value = value;
-
-  final RxBool _isLoadingLists = false.obs;
-  bool get isLoadingLists => _isLoadingLists.value;
-  set isLoadingLists(bool value) => _isLoadingLists.value = value;
 
   @override
   Future<void> onInit() async {
@@ -31,7 +20,8 @@ class UserController extends GetxController {
     super.onInit();
   }
 
-  Future<bool> addList() async {
+  @override
+  Future<bool> addElements() async {
     String title = nameController.text.trim();
     String description = descriptionController.text.trim();
 
@@ -59,7 +49,8 @@ class UserController extends GetxController {
     }
   }
 
-  void removeList(int index) async {
+  @override
+  void removeElements(int index) async {
     ListModel list = lists[index];
     bool success = await listRepository.removeList(list.id);
     if (success) {
@@ -69,7 +60,8 @@ class UserController extends GetxController {
     }
   }
 
-  reorderLists(int oldIndex, int newIndex) {
+  @override
+  reorderElements(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
@@ -78,7 +70,13 @@ class UserController extends GetxController {
     listRepository.reorderLists(oldIndex, newIndex);
   }
 
-  void updateList(int id, Map<String, dynamic> params) {
+  @override
+  void updateElements(int id, Map<String, dynamic> params) {
     listRepository.updateList(id, params);
+  }
+  
+  @override
+  void filterElements() {
+    lists = lists.where((list) => list.name.contains(searchController.text.trim())).toList().obs;
   }
 }

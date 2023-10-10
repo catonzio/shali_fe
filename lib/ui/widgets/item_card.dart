@@ -13,7 +13,7 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetX<ListController>(builder: (controller) {
-      ItemModel item = controller.list.items[index];
+      ItemModel item = controller.visibleItems[index];
       TextStyle style = item.isDone ? checkedStyle : const TextStyle();
 
       return Dismissible(
@@ -33,7 +33,7 @@ class ItemCard extends StatelessWidget {
           ],
         )),
         onDismissed: (DismissDirection direction) =>
-            controller.removeItem(index),
+            controller.removeElements(index),
         child: GestureDetector(
           onLongPress: () => controller.isMoving = !controller.isMoving,
           onTap: () => Get.dialog(ItemCardDialog(index: index)),
@@ -45,7 +45,7 @@ class ItemCard extends StatelessWidget {
                 leading: Checkbox(
                   value: item.isDone,
                   onChanged: (value) {
-                    controller.updateItem(item.id, {'is_checked': value});
+                    controller.updateElements(item.id, {'is_checked': value});
                     item.isDone = value!;
                   },
                 ),
@@ -93,7 +93,7 @@ class ItemCardDialog extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                controller.removeItem(index);
+                controller.removeElements(index);
                 Get.back();
               },
               child: const Text("Delete"),

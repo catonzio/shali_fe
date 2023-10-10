@@ -46,6 +46,9 @@ class UserProvider {
       dio.Response response = await client.dioClient.get("/users/me");
       return response.data;
     } on dio.DioException catch (e) {
+      if (e.type == dio.DioExceptionType.unknown) {
+        Get.snackbar("Network error", "Check your internet connection");
+      }
       e.printError();
       client.refreshToken(null);
       return {};

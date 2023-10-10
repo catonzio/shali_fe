@@ -7,7 +7,7 @@ class ListModel {
   final int id;
   final String name;
   final String description;
-  final RxList<ItemModel> items;
+  RxList<ItemModel> items;
 
   final RxBool _isDone = false.obs;
   bool get isDone => _isDone.value;
