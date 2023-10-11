@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:shali_fe/data/controllers/user_controller.dart';
 import 'package:shali_fe/data/controllers/list_controller.dart';
@@ -35,36 +36,45 @@ class ListCard extends StatelessWidget {
           onDismissed: (DismissDirection direction) =>
               controller.removeElements(index),
           child: GestureDetector(
-            onLongPress: () => controller.isMoving = !controller.isMoving,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ListTile(
-                leading: Checkbox(
-                  value: list.isDone,
-                  onChanged: (value) {
-                    controller.updateElements(list.id, {'is_checked': value});
-                    list.isDone = value!;
-                  },
+              onLongPress: () => controller.updateIsMoving(),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                title: Text(list.name, style: style),
-                subtitle: Text(list.description, style: style),
-                onTap: () => Get.toNamed(
-                  "/list",
-                  arguments: list,
-                )?.then((value) => Get.delete<ListController>()),
-                trailing: controller.isMoving
-                    ? ReorderableDragStartListener(
-                        index: index,
-                        child: const Icon(Icons.drag_handle_sharp),
-                      )
-                    : Container(
-                        width: 10,
-                      ),
-              ),
-            ),
-          ),
+                child: ListTile(
+                  leading: Checkbox(
+                    value: list.isDone,
+                    onChanged: (value) {
+                      controller.updateElements(list.id, {'is_checked': value});
+                      list.isDone = value!;
+                    },
+                  ),
+                  title: Text(list.name, style: style),
+                  subtitle: Text(list.description, style: style),
+                  onTap: () => Get.toNamed(
+                    "/list",
+                    arguments: list,
+                  )?.then((value) => Get.delete<ListController>()),
+                  trailing: controller.isMoving
+                      ? ReorderableDragStartListener(
+                          index: index,
+                          child: const Icon(Icons.drag_handle_sharp),
+                        )
+                      : Container(
+                          width: 10,
+                        ),
+                ),
+              )
+                  .animate(
+                    target: controller.isMoving ? 1 : 0,
+                    onComplete: (animController) => controller.isMoving
+                        ? animController.loop(reverse: true)
+                        : animController.stop(),
+                  )
+                  .rotate(
+                      begin: controller.isMoving ? -0.002 : 0,
+                      end: 0.002,
+                      duration: 100.ms)),
         );
       },
     );

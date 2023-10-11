@@ -14,6 +14,19 @@ abstract class ListElementsController extends GetxController {
   bool get isLoadingElements => _isLoadingElements.value;
   set isLoadingElements(bool value) => _isLoadingElements.value = value;
 
+
+  void clearSearch() {
+    searchController.clear();
+    filterElements("");
+  }
+
+  void updateIsMoving() {
+    if (canMove) {
+      isMoving = !isMoving;
+    }
+  }
+
+  bool get canMove;
   Future<bool> addElements();
   void removeElements(int index);
   void reorderElements(int oldIndex, int newIndex);

@@ -17,6 +17,9 @@ class ListController extends ListElementsController {
   List<ItemModel> get visibleItems => _visibleItems;
   set visibleItems(List<ItemModel> value) => _visibleItems.value = value;
 
+  @override
+  bool get canMove => searchController.text.isEmpty && visibleItems.length > 1;
+
   ListController({required this.itemRepository});
 
   @override
@@ -27,7 +30,7 @@ class ListController extends ListElementsController {
       List<ItemModel> items = await itemRepository.fetchListItems(list.id);
       list.items.addAll(items);
       isLoadingElements = false;
-    } 
+    }
     if (visibleItems.isEmpty) {
       visibleItems = list.items;
     }

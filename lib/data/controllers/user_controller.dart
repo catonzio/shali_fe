@@ -9,10 +9,13 @@ class UserController extends ListElementsController {
   final ListRepository listRepository;
 
   late RxList<ListModel> originalLists;
-  
+
   final RxList<ListModel> _visibleLists = <ListModel>[].obs;
   List<ListModel> get visibleLists => _visibleLists;
   set visibleLists(List<ListModel> value) => _visibleLists.value = value;
+
+  @override
+  bool get canMove => searchController.text.isEmpty && visibleLists.length > 1;
 
   UserController({required this.listRepository});
 

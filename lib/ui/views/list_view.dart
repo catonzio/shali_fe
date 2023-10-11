@@ -4,6 +4,7 @@ import 'package:shali_fe/data/controllers/list_controller.dart';
 import 'package:shali_fe/data/models/item.dart';
 import 'package:shali_fe/ui/widgets/insert_widget.dart';
 import 'package:shali_fe/ui/widgets/item_card.dart';
+import 'package:shali_fe/ui/widgets/my_search_bar.dart';
 
 class MyListView extends StatelessWidget {
   const MyListView({super.key});
@@ -17,7 +18,7 @@ class MyListView extends StatelessWidget {
               // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: Text(controller.list.name),
               actions: [
-                if (controller.searchController.text.isEmpty)
+                if (controller.canMove)
                   IconButton(
                     onPressed: () {
                       controller.isMoving = !controller.isMoving;
@@ -28,6 +29,11 @@ class MyListView extends StatelessWidget {
                     tooltip: controller.isMoving ? "Done" : "Reorder",
                   )
               ],
+              bottom: PreferredSize(
+                preferredSize:
+                    Size.fromHeight(MediaQuery.of(context).size.height * 0.1),
+                child: MySearchBar(controller: controller),
+              ),
             ),
             // drawer: const DefaultDrawer(),
             floatingActionButton: FloatingActionButton(
@@ -49,43 +55,24 @@ class MyListView extends StatelessWidget {
     );
   }
 
-  Column mainBody(ListController controller) {
+  Widget mainBody(ListController controller) {
     List<ItemModel> list = controller.visibleItems;
 
-    return Column(
-      children: [
-        Text(controller.list.description),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-          child: Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                controller: controller.searchController,
-                onChanged: (value) => controller.filterElements(value),
-              )),
-              const Icon(Icons.search),
-            ],
-          ),
-        ),
-        Expanded(
-          child: controller.isMoving && controller.searchController.text.isEmpty
-              ? ReorderableListView.builder(
-                  itemCount: list.length,
-                  onReorder: (oldIndex, newIndex) =>
-                      controller.reorderElements(oldIndex, newIndex),
-                  itemBuilder: (context, index) => ItemCard(
-                        index: index,
-                        key: list[index].key,
-                      ))
-              : ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (context, index) => ItemCard(
-                        index: index,
-                        key: list[index].key,
-                      )),
-        )
-      ],
-    );
+    return controller.canMove && controller.isMoving
+        ? ReorderableListView.builder(
+            itemCount: list.length,
+            buildDefaultDragHandles: false,
+            onReorder: (oldIndex, newIndex) =>
+                controller.reorderElements(oldIndex, newIndex),
+            itemBuilder: (context, index) => ItemCard(
+                  index: index,
+                  key: list[index].key,
+                ))
+        : ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (context, index) => ItemCard(
+                  index: index,
+                  key: list[index].key,
+                ));
   }
 }

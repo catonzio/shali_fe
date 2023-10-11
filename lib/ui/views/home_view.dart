@@ -5,6 +5,7 @@ import 'package:shali_fe/data/models/list.dart';
 import 'package:shali_fe/ui/widgets/default_drawer.dart';
 import 'package:shali_fe/ui/widgets/insert_widget.dart';
 import 'package:shali_fe/ui/widgets/list_card.dart';
+import 'package:shali_fe/ui/widgets/my_search_bar.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -19,7 +20,7 @@ class HomeView extends StatelessWidget {
               title: const Text("Your lists"),
               centerTitle: true,
               actions: [
-                if (controller.searchController.text.isEmpty)
+                if (controller.canMove)
                   IconButton(
                     onPressed: () {
                       controller.isMoving = !controller.isMoving;
@@ -30,6 +31,11 @@ class HomeView extends StatelessWidget {
                     tooltip: controller.isMoving ? "Done" : "Reorder",
                   )
               ],
+              bottom: PreferredSize(
+                preferredSize:
+                    Size.fromHeight(MediaQuery.of(context).size.height * 0.1),
+                child: MySearchBar(controller: controller),
+              ),
             ),
             floatingActionButton: FloatingActionButton(
                 child: const Icon(Icons.add),
@@ -50,36 +56,19 @@ class HomeView extends StatelessWidget {
   Widget mainBody(UserController controller) {
     List<ListModel> lists = controller.visibleLists;
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-          child: Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                controller: controller.searchController,
-                onChanged: (value) => controller.filterElements(value),
-              )),
-              const Icon(Icons.search),
-            ],
-          ),
-        ),
-        Expanded(
-          child: controller.isMoving && controller.searchController.text.isEmpty
-              ? ReorderableListView.builder(
-                  onReorder: (oldIndex, newIndex) =>
-                      controller.reorderElements(oldIndex, newIndex),
-                  itemCount: lists.length,
-                  itemBuilder: (context, index) => ListCard(
-                        index: index,
-                        key: lists[index].key,
-                      ))
-              : ListView.builder(
-                  itemCount: lists.length,
-                  itemBuilder: (context, index) => ListCard(index: index)),
-        )
-      ],
-    );
+    return controller.isMoving && controller.canMove
+        ? ReorderableListView.builder(
+            buildDefaultDragHandles: false,
+            onReorder: (oldIndex, newIndex) =>
+                controller.reorderElements(oldIndex, newIndex),
+            itemCount: lists.length,
+            itemBuilder: (context, index) => ListCard(
+                  index: index,
+                  key: lists[index].key,
+                ))
+        : ListView.builder(
+            itemCount: lists.length,
+            itemBuilder: (context, index) =>
+                ListCard(key: lists[index].key, index: index));
   }
 }

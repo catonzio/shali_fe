@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:shali_fe/data/controllers/list_controller.dart';
 import 'package:shali_fe/data/models/item.dart';
@@ -35,7 +36,7 @@ class ItemCard extends StatelessWidget {
         onDismissed: (DismissDirection direction) =>
             controller.removeElements(index),
         child: GestureDetector(
-          onLongPress: () => controller.isMoving = !controller.isMoving,
+          onLongPress: () => controller.updateIsMoving(),
           onTap: () => Get.dialog(ItemCardDialog(index: index)),
           child: Card(
             shape: RoundedRectangleBorder(
@@ -66,7 +67,17 @@ class ItemCard extends StatelessWidget {
                     : Container(
                         width: 10,
                       )),
-          ),
+          )
+              .animate(
+                target: controller.isMoving ? 1 : 0,
+                onComplete: (animController) => controller.isMoving
+                    ? animController.loop(reverse: true)
+                    : animController.stop(),
+              )
+              .rotate(
+                  begin: controller.isMoving ? -0.002 : 0,
+                  end: 0.002,
+                  duration: 100.ms),
         ),
       );
     });
