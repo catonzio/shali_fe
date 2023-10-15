@@ -18,14 +18,17 @@ Future<void> main() async {
 
 Future<void> initializeApp() async {
   FirebaseOptions? options = DefaultFirebaseOptions.currentPlatform;
+  await GetStorage.init("api");
+  await GetStorage.init("settings");
   if (options != null) {
     await Firebase.initializeApp(options: options);
     await NotificationService.initializePlatformNotifications();
-    handleDeviceToken();
-    handleNotifications();
+    bool res = await requestNotificationPermissions();
+    if (res) {
+      handleDeviceToken();
+      handleNotifications();
+    }
   }
-  await GetStorage.init("api");
-  await GetStorage.init("settings");
 }
 
 class MyApp extends StatelessWidget {
@@ -37,8 +40,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
         title: 'ShaLi',
         debugShowCheckedModeBanner: false,
-        theme: MyThemes.lightTheme(),
-        darkTheme: MyThemes.darkTheme(),
+        theme: Themes.lightTheme(),
+        darkTheme: Themes.darkTheme(),
         themeMode: ThemeMode.system,
         initialBinding: InitialBinding(),
         initialRoute: Routes.initial,

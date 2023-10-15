@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shali_fe/configs/notifications/notification_service.dart';
 
-void requestNotificationPermissions() async {
+Future<bool> requestNotificationPermissions() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   NotificationSettings settings = await messaging.requestPermission(
@@ -17,6 +17,7 @@ void requestNotificationPermissions() async {
   );
 
   print('User granted permission: ${settings.authorizationStatus}');
+  return settings.authorizationStatus == AuthorizationStatus.authorized;
 }
 
 @pragma('vm:entry-point')

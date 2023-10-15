@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shali_fe/configs/dimensions.dart';
 import 'package:shali_fe/data/controllers/user_controller.dart';
 import 'package:shali_fe/data/models/list.dart';
 import 'package:shali_fe/ui/widgets/default_drawer.dart';
@@ -18,7 +19,6 @@ class HomeView extends StatelessWidget {
             appBar: AppBar(
               // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: const Text("Your lists"),
-              centerTitle: true,
               actions: [
                 if (controller.canMove)
                   IconButton(
@@ -33,15 +33,17 @@ class HomeView extends StatelessWidget {
               ],
               bottom: PreferredSize(
                 preferredSize:
-                    Size.fromHeight(MediaQuery.of(context).size.height * 0.1),
+                    Size.fromHeight(Dimensions.height(context, perc: 10)),
                 child: MySearchBar(controller: controller),
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-                child: const Icon(Icons.add),
-                onPressed: () => Get.defaultDialog(
-                    title: "Add list",
-                    content: InsertWidget(controller: controller))),
+            floatingActionButton: controller.isMoving
+                ? Container()
+                : FloatingActionButton(
+                    child: const Icon(Icons.add),
+                    onPressed: () => Get.defaultDialog(
+                        title: "Add list",
+                        content: InsertWidget(controller: controller))),
             drawer: const DefaultDrawer(),
             body: Center(
                 child: Padding(

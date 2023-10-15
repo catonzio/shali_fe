@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shali_fe/data/controllers/register_controller.dart';
+import 'package:shali_fe/utils.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
@@ -13,59 +14,98 @@ class RegisterView extends StatelessWidget {
   }
 
   Scaffold body(BuildContext context, RegisterController controller) {
-    // double width = MediaQuery.of(context).size.width;
-    // double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Register"),
-        centerTitle: true,
       ),
       body: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(64),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextField(
-                  controller: controller.nameController,
-                  decoration: const InputDecoration(hintText: "name")),
-              TextField(
-                  controller: controller.emailController,
-                  decoration: const InputDecoration(hintText: "email")),
-              TextField(
-                controller: controller.passwordController,
-                decoration: InputDecoration(
-                    hintText: "password",
-                    suffix: IconButton(
-                      padding: const EdgeInsets.all(0),
-                      icon: Icon(controller.isPasswordObscure
-                          ? Icons.visibility
-                          : Icons.visibility_off),
-                      onPressed: () => controller.isPasswordObscure =
-                          !controller.isPasswordObscure,
-                    )),
-                obscureText: controller.isPasswordObscure,
-              ),
-              TextField(
-                controller: controller.passwordConfirmController,
-                decoration: InputDecoration(
-                    hintText: "confirm password",
-                    suffix: IconButton(
-                      padding: const EdgeInsets.all(0),
-                      icon: Icon(controller.isPasswordObscure
-                          ? Icons.visibility
-                          : Icons.visibility_off),
-                      onPressed: () => controller.isPasswordObscure =
-                          !controller.isPasswordObscure,
-                    )),
-                obscureText: controller.isPasswordObscure,
-              ),
-              ElevatedButton(
-                  child: const Text("Login"),
-                  onPressed: () => controller.register()),
-            ],
+          child: Form(
+            key: controller.formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 2,
+                    child: Container(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextFormField(
+                            controller: controller.nameController,
+                            validator: (value) =>
+                                (value == null || value.isEmpty)
+                                    ? "Please enter a name"
+                                    : null,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Name")),
+                        TextFormField(
+                            controller: controller.emailController,
+                            validator: (value) => !isValidEmail(value ?? "")
+                                ? "Please enter a valid email"
+                                : null,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Email")),
+                        TextFormField(
+                          controller: controller.passwordController,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? "Please enter a password"
+                              : null,
+                          decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: "Password",
+                              suffix: IconButton(
+                                padding: const EdgeInsets.all(0),
+                                icon: Icon(controller.isPasswordObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () => controller.isPasswordObscure =
+                                    !controller.isPasswordObscure,
+                              )),
+                          obscureText: controller.isPasswordObscure,
+                        ),
+                        TextFormField(
+                          controller: controller.passwordConfirmController,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? "Please enter a password"
+                              : (value !=
+                                      controller.passwordController.text.trim())
+                                  ? "Passwords do not match"
+                                  : null,
+                          decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: "Confirm Password",
+                              suffix: IconButton(
+                                padding: const EdgeInsets.all(0),
+                                icon: Icon(controller.isPasswordObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () => controller.isPasswordObscure =
+                                    !controller.isPasswordObscure,
+                              )),
+                          obscureText: controller.isPasswordObscure,
+                        ),
+                      ],
+                    ))),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                        child: const Text("Register"),
+                        onPressed: () {
+                          if (controller.formKey.currentState!.validate()) {
+                            controller.register();
+                          }
+                        }),
+                  ),
+                ),
+              ],
+            ),
           )),
     );
   }

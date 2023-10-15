@@ -4,7 +4,6 @@ import 'package:shali_fe/data/providers/item_provider.dart';
 import 'package:shali_fe/data/repositories/item_repository.dart';
 
 class ListBindings implements Bindings {
-
   @override
   void dependencies() {
     Get.lazyPut(() => ListController(

@@ -11,31 +11,42 @@ class InsertWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //  = Get.find<ListController>();
-    return Column(
-      children: [
-        TextField(
-          controller: controller.nameController,
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(), labelText: "Title"),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: controller.formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: controller.nameController,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: "Title"),
+              validator: (value) => (value == null || value.isEmpty)
+                  ? "Please enter a title"
+                  : null,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: controller.descriptionController,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: "Description"),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  if (controller.formKey.currentState!.validate()) {
+                    bool res = await controller.addElements();
+                    if (res) Get.back();
+                  }
+                },
+                child: const Text("Add"))
+          ],
         ),
-        const SizedBox(
-          height: 16,
-        ),
-        TextField(
-          controller: controller.descriptionController,
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(), labelText: "Description"),
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        ElevatedButton(
-            onPressed: () async {
-              bool res = await controller.addElements();
-              if (res) Get.back();
-            },
-            child: const Text("Add"))
-      ],
+      ),
     );
   }
 }

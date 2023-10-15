@@ -14,10 +14,16 @@ class LoginController extends GetxController {
   LoginSchema get loginSchema => _loginSchema.value;
   set loginSchema(LoginSchema value) => _loginSchema.value = value;
 
+  final RxBool _isLoading = false.obs;
+  bool get isLoading => _isLoading.value;
+  set isLoading(bool value) => _isLoading.value = value;
+
   final TextEditingController emailController =
       TextEditingController(text: "string@email.com");
   final TextEditingController passwordController =
       TextEditingController(text: "string");
+
+  final formKey = GlobalKey<FormState>();
 
   LoginController({required this.userRepository});
 
@@ -28,8 +34,10 @@ class LoginController extends GetxController {
   }
 
   Future<void> login() async {
+    isLoading = true;
     LoginSchema result = await userRepository.login(
         emailController.text.trim(), passwordController.text.trim());
+    isLoading = false;
     if (result.success) {
       Get.offAllNamed("/home");
     } else if (result.fieldMissing) {

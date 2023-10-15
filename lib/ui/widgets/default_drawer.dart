@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shali_fe/configs/routes.dart';
+import 'package:shali_fe/configs/themes.dart';
 import 'package:shali_fe/data/controllers/settings_controller.dart';
 import 'package:shali_fe/data/repositories/user_repository.dart';
 
@@ -16,19 +17,24 @@ class DefaultDrawer extends StatelessWidget {
           children: [
             DrawerHeader(
               child: Center(
-                  child: Text("ShaLi", style: Get.textTheme.headlineLarge)),
+                  child: Text("ShaLi",
+                      style: Themes.textTheme(context).headlineLarge)),
             ),
             ListTile(
                 title: const Text("Dark Mode"),
-                onTap: () => Get.toNamed(Routes.home),
+                onTap: () => Get.offNamed(Routes.home),
                 trailing: Switch(
                     value: controller.isDarkMode,
                     onChanged: (value) => controller.toggleDarkMode(value))),
-            const Spacer(),
+            const Divider(),
             ListTile(
-              title: const Text("Settings"),
-              onTap: () => Get.toNamed(Routes.settings),
+              title: Text(controller.user.name),
             ),
+            const Spacer(),
+            // ListTile(
+            //   title: const Text("Settings"),
+            //   onTap: () => Get.toNamed(Routes.settings),
+            // ),
             ListTile(
               title: const Text("Logout"),
               onTap: () => Get.find<UserRepository>().logout(),

@@ -12,6 +12,8 @@ class RegisterController extends GetxController {
   final TextEditingController passwordConfirmController =
       TextEditingController();
 
+  final formKey = GlobalKey<FormState>();
+
   RegisterController({required this.userRepository});
 
   final RxBool _isPasswordObscure = true.obs;

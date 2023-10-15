@@ -11,7 +11,10 @@ import 'package:shali_fe/ui/views/register_view.dart';
 
 class AppPages {
   static final routes = [
-    GetPage(name: Routes.home, page: () => HomeView(), binding: UserBindings()),
+    GetPage(
+        name: Routes.home,
+        page: () => const HomeView(),
+        binding: UserBindings()),
     GetPage(
         name: Routes.login,
         page: () => const LoginView(),
@@ -21,6 +24,8 @@ class AppPages {
         page: () => const RegisterView(),
         binding: RegisterBindings()),
     GetPage(
-        name: Routes.list, page: () => MyListView(), binding: ListBindings()),
+        name: Routes.list,
+        page: () => const MyListView(),
+        binding: ListBindings()),
   ];
 }

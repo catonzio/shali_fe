@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:shali_fe/data/controllers/list_controller.dart';
 import 'package:shali_fe/data/models/item.dart';
 import 'package:shali_fe/configs/styles.dart';
 import 'dart:math' as math;
+import 'package:shali_fe/utils.dart';
 
 class ItemCard extends StatelessWidget {
   final int index;
@@ -15,7 +15,7 @@ class ItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetX<ListController>(builder: (controller) {
       ItemModel item = controller.visibleItems[index];
-      TextStyle style = item.isDone ? checkedStyle : const TextStyle();
+      TextStyle style = item.isDone ? checkedStyle(context) : const TextStyle();
 
       return Dismissible(
         key: item.key,
@@ -36,49 +36,42 @@ class ItemCard extends StatelessWidget {
         onDismissed: (DismissDirection direction) =>
             controller.removeElements(index),
         child: GestureDetector(
-          onLongPress: () => controller.updateIsMoving(),
-          onTap: () => Get.dialog(ItemCardDialog(index: index)),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: ListTile(
-                leading: Checkbox(
-                  value: item.isDone,
-                  onChanged: (value) {
-                    controller.updateElements(item.id, {'is_checked': value});
-                    item.isDone = value!;
-                  },
-                ),
-                title: Text(
-                  item.name,
-                  style: style,
-                ),
-                subtitle: Text(
-                  item.description,
-                  style: style,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: controller.isMoving
-                    ? ReorderableDragStartListener(
-                        index: index,
-                        child: const Icon(Icons.drag_handle_sharp),
-                      )
-                    : Container(
-                        width: 10,
-                      )),
-          )
-              .animate(
-                target: controller.isMoving ? 1 : 0,
-                onComplete: (animController) => controller.isMoving
-                    ? animController.loop(reverse: true)
-                    : animController.stop(),
-              )
-              .rotate(
-                  begin: controller.isMoving ? -0.002 : 0,
-                  end: 0.002,
-                  duration: 100.ms),
-        ),
+            onLongPress: () => controller.updateIsMoving(),
+            onTap: () => Get.dialog(ItemCardDialog(index: index)),
+            child: withRotation(
+                context,
+                controller.isMoving,
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ListTile(
+                      leading: Checkbox(
+                        value: item.isDone,
+                        onChanged: (value) {
+                          controller
+                              .updateElements(item.id, {'is_checked': value});
+                          item.isDone = value!;
+                        },
+                      ),
+                      title: Text(
+                        item.name,
+                        style: style,
+                      ),
+                      subtitle: Text(
+                        item.description,
+                        style: style,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: controller.isMoving
+                          ? ReorderableDragStartListener(
+                              index: index,
+                              child: const Icon(Icons.drag_handle_sharp),
+                            )
+                          : Container(
+                              width: 10,
+                            )),
+                ))),
       );
     });
   }

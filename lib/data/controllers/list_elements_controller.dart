@@ -14,6 +14,7 @@ abstract class ListElementsController extends GetxController {
   bool get isLoadingElements => _isLoadingElements.value;
   set isLoadingElements(bool value) => _isLoadingElements.value = value;
 
+  final formKey = GlobalKey<FormState>();
 
   void clearSearch() {
     searchController.clear();
