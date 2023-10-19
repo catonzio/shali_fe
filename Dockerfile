@@ -29,6 +29,6 @@ RUN flutter build web --no-tree-shake-icons
 FROM nginx:1.21.1-alpine
 COPY --from=build-env /app/build/web /usr/share/nginx/html/shali
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-RUN sed -i 's/<base href="\/">/<base href="\/PLACEHOLDER\/">/g' /usr/share/nginx/html/shali/index.html
+RUN sed -i 's/<base href="\/">/<base href="\/shali\/">/g' /usr/share/nginx/html/shali/index.html
 
 # CMD ["flutter", "run", "-d", "web-server", "--web-port", "8080", "--web-hostname", "0.0.0.0"]
