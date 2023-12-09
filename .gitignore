@@ -3,7 +3,8 @@
 
 ### Mine ###
 firebase.exe
-
+app/.metadata
+app/pubspec.lock
 ### Android ###
 # Gradle files
 .gradle/

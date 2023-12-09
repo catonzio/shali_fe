@@ -16,19 +16,22 @@ RUN flutter channel stable
 RUN flutter config --enable-web
 
 RUN mkdir /app/
-COPY . /app/
+COPY ./app /app/
 WORKDIR /app/
 RUN flutter clean
 RUN flutter pub get
-RUN flutter build web --no-tree-shake-icons
+RUN flutter build web 
+# --no-tree-shake-icons
 
 # ------------------------------------------------------------------------#
 # CHANGE HERE
 # Replace PLACEHOLDER with the name in the url
 # Stage 2
 FROM nginx:1.21.1-alpine
-COPY --from=build-env /app/build/web /usr/share/nginx/html/shali
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-RUN sed -i 's/<base href="\/">/<base href="\/shali\/">/g' /usr/share/nginx/html/shali/index.html
+COPY --from=build-env /app/build/web /usr/share/nginx/html
+
+# COPY --from=build-env /app/build/web /usr/share/nginx/html/shali
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# RUN sed -i 's/<base href="\/">/<base href="\/shali\/">/g' /usr/share/nginx/html/shali/index.html
 
 # CMD ["flutter", "run", "-d", "web-server", "--web-port", "8080", "--web-hostname", "0.0.0.0"]
