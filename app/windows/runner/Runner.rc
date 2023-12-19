@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "shali_fe" "\0"
+            VALUE "FileDescription", "shali" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "shali_fe" "\0"
+            VALUE "InternalName", "shali" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "shali_fe.exe" "\0"
-            VALUE "ProductName", "shali_fe" "\0"
+            VALUE "OriginalFilename", "shali.exe" "\0"
+            VALUE "ProductName", "shali" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,6 +1,6 @@
 {
-    "name": "shali_fe",
-    "short_name": "shali_fe",
+    "name": "shali",
+    "short_name": "shali",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

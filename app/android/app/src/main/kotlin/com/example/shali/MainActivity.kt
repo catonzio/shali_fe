@@ -1,4 +1,4 @@
-package com.example.shali_fe
+package com.example.shali
 
 import io.flutter.embedding.android.FlutterActivity
 
