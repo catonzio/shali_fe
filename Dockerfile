@@ -20,7 +20,7 @@ COPY ./app /app/
 WORKDIR /app/
 RUN flutter clean
 RUN flutter pub get
-RUN flutter build web 
+RUN flutter build web --base-href "/shali/"
 # --no-tree-shake-icons
 
 # ------------------------------------------------------------------------#
@@ -28,7 +28,7 @@ RUN flutter build web
 # Replace PLACEHOLDER with the name in the url
 # Stage 2
 FROM nginx:1.21.1-alpine
-COPY --from=build-env /app/build/web /usr/share/nginx/html
+COPY --from=build-env /app/build/web /usr/share/nginx/html/
 
 # COPY --from=build-env /app/build/web /usr/share/nginx/html/shali
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
