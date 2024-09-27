@@ -32,12 +32,12 @@
   <title>shali</title>
   <link rel="manifest" href="manifest.json">
 
-  <script>
+  <!-- <script>
     // The value below is injected by flutter build, do not touch.
     const serviceWorkerVersion = null;
-  </script>
+  </script> -->
   <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+  <!-- <script src="flutter.js" defer></script> -->
 
   <!-- Include the Firebase JavaScript SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
@@ -45,6 +45,9 @@
 </head>
 <body>
   <script>
+    // The value below is injected by flutter build, do not touch.
+    const serviceWorkerVersion = null;
+    
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
